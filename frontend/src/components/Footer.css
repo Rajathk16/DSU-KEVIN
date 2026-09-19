@@ -1,0 +1,13 @@
+.footer {
+  background-color: var(--text-black);
+  color: var(--bg-white);
+  padding: 1.5rem 0;
+  width: 100%;
+}
+
+.footer-logo {
+  width: 12px;
+  height: 12px;
+  background-color: var(--accent-orange);
+  margin-right: 8px;
+}

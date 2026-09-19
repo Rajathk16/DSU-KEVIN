@@ -1,0 +1,97 @@
+.comparison-section {
+  padding: 100px 0;
+  background-color: var(--bg-ivory);
+}
+
+.comparison-grid {
+  display: flex;
+  align-items: flex-start;
+}
+
+.compare-col {
+  flex: 1;
+  padding: 0 4rem;
+}
+
+.divider-vertical {
+  width: 1px;
+  background-color: var(--border-light);
+  align-self: stretch;
+}
+
+.compare-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--text-black);
+  margin-bottom: 2rem;
+}
+
+.badge {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.badge-outline {
+  border: 1px solid var(--text-black);
+  color: var(--text-black);
+}
+
+.badge-filled {
+  background-color: var(--accent-orange);
+  color: var(--bg-white);
+}
+
+.label-tiny {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.compare-row {
+  height: 42px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.compare-row:hover {
+  background-color: rgba(0,0,0,0.02);
+}
+
+.compare-row:hover .chev {
+  transform: translateX(4px);
+}
+
+.chev {
+  transition: transform 0.2s ease;
+}
+
+.row-num {
+  font-size: 10px;
+  width: 32px;
+}
+
+.row-text {
+  font-size: 14px;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .comparison-grid {
+    flex-direction: column;
+  }
+  .compare-col {
+    padding: 0;
+    width: 100%;
+    margin-bottom: 3rem;
+  }
+  .divider-vertical {
+    display: none;
+  }
+}

@@ -66,7 +66,7 @@ async function analyzeProjectAndMatch(req, res) {
     const team = await Team.findById(teamId)
       .populate(
         "members.user",
-        "name email college studentId skills github"
+        "name email college studentId skills verifiedSkills github"
       );
 
     if (!team) {
@@ -99,7 +99,7 @@ async function analyzeProjectAndMatch(req, res) {
         $nin: teamMemberIds,
       },
     }).select(
-      "name email college studentId skills github"
+      "name email college studentId skills verifiedSkills github"
     );
 
 
@@ -190,7 +190,7 @@ async function analyzeProjectAndMatch(req, res) {
       candidates.map((candidate) => {
 
         // ------------------------------
-        // Skill Match
+        // Skill Match (Calibrated with Verified Evidence)
         // ------------------------------
 
         const skillMatch =
@@ -201,7 +201,7 @@ async function analyzeProjectAndMatch(req, res) {
 
 
         // ------------------------------
-        // GitHub Evidence
+        // Multi-dimensional GitHub Evidence Confidence
         // ------------------------------
 
         const githubEvidence =
@@ -209,7 +209,6 @@ async function analyzeProjectAndMatch(req, res) {
             candidate.github || {},
             requiredSkills
           );
-
 
         // ------------------------------
         // Project Relevance
@@ -223,7 +222,7 @@ async function analyzeProjectAndMatch(req, res) {
 
 
         // ------------------------------
-        // Final Match Score
+        // Final Match Score (60% Skill + 25% Evidence + 15% Relevance)
         // ------------------------------
 
         const finalScore =
@@ -235,22 +234,41 @@ async function analyzeProjectAndMatch(req, res) {
 
 
         // ------------------------------
-        // Explanation / Reasons
+        // Authenticity Metrics Breakdown
+        // ------------------------------
+        const repos = (candidate.github && candidate.github.repositories) || [];
+        const originalReposCount = repos.filter(r => !r.isFork).length;
+        const forkedReposCount = repos.filter(r => r.isFork).length;
+        const avgContribution = repos.length > 0
+          ? Math.round(repos.reduce((acc, r) => acc + (r.contributionPercentage !== undefined ? r.contributionPercentage : 100), 0) / repos.length)
+          : 0;
+
+        let evidenceLevel = "weak";
+        let evidenceBadge = "🔴 Weak Evidence";
+        if (githubEvidence >= 70) {
+          evidenceLevel = "strong";
+          evidenceBadge = "🟢 Strong Evidence";
+        } else if (githubEvidence >= 40) {
+          evidenceLevel = "moderate";
+          evidenceBadge = "🟡 Moderate Evidence";
+        }
+
+        // ------------------------------
+        // Explanation / Reasons (Demo Ready)
         // ------------------------------
 
         const reasons =
           generateReasons({
             matchedSkills:
               skillMatch.matchedSkills,
-
             githubEvidence,
-
             projectRelevance,
-
             github:
               candidate.github || {},
+            candidate
           });
 
+        const whyMatched = reasons.find(r => r.includes("Why KEVIN")) || reasons[0] || "Profile matches project criteria.";
 
         // ------------------------------
         // Candidate Result
@@ -265,20 +283,33 @@ async function analyzeProjectAndMatch(req, res) {
 
           college: candidate.college,
 
+          finalScore,
+
           skillMatch:
             skillMatch.score,
 
           githubEvidence,
 
-          projectRelevance,
+          evidenceLevel,
 
-          finalScore,
+          evidenceBadge,
+
+          projectRelevance,
 
           matchedSkills:
             skillMatch.matchedSkills,
 
           missingSkills:
             skillMatch.missingSkills,
+
+          authenticityBreakdown: {
+            totalRepositories: repos.length,
+            originalRepositories: originalReposCount,
+            forkedRepositories: forkedReposCount,
+            averagePersonalContribution: avgContribution
+          },
+
+          whyMatched,
 
           reasons,
         };

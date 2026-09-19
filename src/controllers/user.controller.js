@@ -215,7 +215,36 @@ const updateUser = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const { skill } = req.query;
+    
+    // Base query to only fetch users who have synced GitHub (they are the "talent")
+    let query = { "github.username": { $ne: null } };
+    
+    // If a skill is provided, filter by it
+    if (skill) {
+      query.skills = { $regex: new RegExp(`^${skill}$`, "i") };
+    }
+
+    const users = await User.find(query)
+      .select("name college studentId bio skills github.username createdAt")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: users.length,
+      data: {
+        users
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUserById,
-  updateUser
+  updateUser,
+  getAllUsers
 };

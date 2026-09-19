@@ -1,170 +1,83 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
+require("../config/firebase"); // Initialize Firebase Admin
+const { getAuth } = require("firebase-admin/auth");
 const User = require("../models/User");
-const env = require("../config/env");
 
-const createToken = (userId) => {
-  return jwt.sign(
-    {
-      userId: userId.toString()
-    },
-    env.jwtSecret,
-    {
-      expiresIn: env.jwtExpiresIn
-    }
-  );
-};
-
-const register = async (req, res, next) => {
+const syncUser = async (req, res, next) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      college,
-      studentId,
-      bio,
-      skills
-    } = req.body;
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
+    }
 
-    if (!name || !email || !password || !college || !studentId) {
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        error: { message: "No token provided for sync" }
+      });
+    }
+
+    // Verify Firebase token
+    const decodedToken = await getAuth().verifyIdToken(token);
+    const email = decodedToken.email;
+
+    if (!email) {
       return res.status(400).json({
         success: false,
-        error: {
-          message:
-            "name, email, password, college and studentId are required"
-        }
+        error: { message: "Firebase token does not contain an email" }
       });
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Verify it's a college email
-    if (!normalizedEmail.match(/(\.edu|\.ac\.in)$/i)) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: "Please register with a valid college email address (.edu or .ac.in)"
-        }
-      });
-    }
-
-    if (password.length < 8) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: "Password must contain at least 8 characters"
-        }
-      });
-    }
-
-    const existingUser = await User.findOne({
-      email: normalizedEmail
-    });
-
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        error: {
-          message: "An account with this email already exists"
-        }
-      });
-    }
+    const { name, college, studentId, bio, skills } = req.body;
 
     const normalizedSkills = Array.isArray(skills)
-      ? [
-          ...new Set(
-            skills
-              .filter((skill) => typeof skill === "string")
-              .map((skill) => skill.trim().toLowerCase())
-              .filter(Boolean)
-          )
-        ]
+      ? [...new Set(skills.filter(s => typeof s === "string").map(s => s.trim().toLowerCase()).filter(Boolean))]
       : [];
 
-    const passwordHash = await bcrypt.hash(password, 12);
+    let user = await User.findOne({ email });
 
-    const user = await User.create({
-      name: name.trim(),
-      email: normalizedEmail,
-      password: passwordHash,
-      college: college.trim(),
-      studentId: studentId.trim(),
-      bio: typeof bio === "string" ? bio.trim() : "",
-      skills: normalizedSkills
-    });
-
-    const token = createToken(user._id);
-
-    return res.status(201).json({
-      success: true,
-      data: {
-        user,
-        token
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: "Email and password are required"
-        }
-      });
-    }
-
-    const normalizedEmail = email.trim().toLowerCase();
-
-    const user = await User.findOne({
-      email: normalizedEmail
-    }).select("+password");
-
-    /*
-     * Do not reveal whether the email exists.
-     */
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          message: "Invalid email or password"
-        }
+      // Create new user in DB
+      // We don't need to store passwords anymore because Firebase handles it!
+      // However, our User model might require a password field. 
+      // We can generate a random string or remove the requirement from the schema later.
+      user = await User.create({
+        name: name ? name.trim() : email.split('@')[0],
+        email: email,
+        password: "FIREBASE_MANAGED_PASSWORD_" + Date.now(), // Dummy password since required
+        college: college ? college.trim() : "",
+        studentId: studentId ? studentId.trim() : "",
+        bio: typeof bio === "string" ? bio.trim() : "",
+        skills: normalizedSkills
       });
+    } else {
+      // Update existing user profile if needed
+      if (name) user.name = name.trim();
+      if (college) user.college = college.trim();
+      if (studentId) user.studentId = studentId.trim();
+      if (bio) user.bio = bio.trim();
+      if (skills) user.skills = normalizedSkills;
+      await user.save();
     }
-
-    const passwordMatches = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!passwordMatches) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          message: "Invalid email or password"
-        }
-      });
-    }
-
-    const token = createToken(user._id);
 
     return res.status(200).json({
       success: true,
-      data: {
-        user,
-        token
-      }
+      data: { user }
     });
   } catch (error) {
-    next(error);
+    console.error("Sync Error:", error);
+    
+    // If it's a MongoDB validation or duplicate key error, return 400
+    if (error.name === 'ValidationError' || error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        error: { message: error.message }
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      error: { message: "Invalid or expired Firebase token", details: error.message }
+    });
   }
 };
 
@@ -182,7 +95,6 @@ const getMe = async (req, res, next) => {
 };
 
 module.exports = {
-  register,
-  login,
+  syncUser,
   getMe
 };

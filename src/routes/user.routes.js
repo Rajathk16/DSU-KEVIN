@@ -2,7 +2,8 @@ const express = require("express");
 
 const {
   getUserById,
-  updateUser
+  updateUser,
+  getAllUsers
 } = require("../controllers/user.controller");
 
 const {
@@ -14,6 +15,7 @@ const router = express.Router();
 /*
  * All profile operations require authentication.
  */
+router.get("/", protect, getAllUsers);
 router.get("/:id", protect, getUserById);
 
 router.put("/:id", protect, updateUser);

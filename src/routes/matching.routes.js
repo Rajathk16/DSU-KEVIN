@@ -6,6 +6,8 @@ const {
   analyzeProjectAndMatch,
 } = require("../controllers/matching.controller");
 
+const { protect } = require("../middleware/auth.middleware");
+
 const router = express.Router();
 
 
@@ -13,6 +15,7 @@ const router = express.Router();
 
 router.post(
   "/analyze-project",
+  protect,
   analyzeProjectAndMatch
 );
 

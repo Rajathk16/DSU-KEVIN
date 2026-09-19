@@ -1,36 +1,51 @@
 .hero {
-  padding: 100px 0;
-  min-height: calc(100vh - 56px);
+  padding: 70px 0 90px 0;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 4%;
 }
 
 .hero-left {
-  width: 45%;
+  width: 50%;
   padding-right: 2rem;
 }
 
 .hero-right {
-  width: 55%;
+  width: 50%;
+  position: relative;
 }
 
 .hero-eyebrow {
   font-size: 11px;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin-bottom: 2rem;
+  font-weight: 600;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   background-color: var(--accent-orange);
   border-radius: 50%;
   margin-right: 8px;
   display: inline-block;
 }
 
+.dot.pulse {
+  animation: pulseGlow 2s infinite;
+}
+
 .hero-headline {
-  font-size: 72px;
-  line-height: 0.9;
-  letter-spacing: -1px;
+  font-size: 64px;
+  line-height: 0.92;
+  letter-spacing: -1.5px;
   margin-bottom: 2rem;
 }
 
@@ -41,70 +56,331 @@
 .hero-subtext {
   font-size: 16px;
   color: var(--text-gray);
-  margin-bottom: 3rem;
-  max-width: 400px;
+  margin-bottom: 2.5rem;
+  max-width: 440px;
+  line-height: 1.6;
 }
 
 .hero-actions {
-  gap: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
 }
 
 .secondary-link {
   font-size: 14px;
-  font-weight: 500;
-  border-bottom: 1px solid var(--text-black);
+  font-weight: 600;
+  color: var(--text-black);
+  border-bottom: 2px solid var(--text-black);
   padding-bottom: 2px;
   gap: 4px;
-  transition: opacity 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .secondary-link:hover {
-  opacity: 0.6;
+  color: var(--accent-orange);
+  border-color: var(--accent-orange);
+  transform: translateX(4px);
 }
 
-.visualization-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 500px;
-  background-color: #F0EEE7;
-  border: 1px solid var(--border-light);
-  padding: 1rem;
-  position: relative;
-  background-image: 
-    linear-gradient(to right, var(--border-light) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border-light) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.vis-header {
-  font-size: 10px;
-  letter-spacing: 1px;
-}
-
-.vis-body {
+.liquid-metal-action-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100% - 20px);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease;
 }
 
-.mock-card {
+.liquid-metal-action-wrapper:hover {
+  transform: scale(1.08);
+}
+
+.hero-stats-row {
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-pill .bold {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-pill span:last-child {
+  font-size: 12px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border-light);
+}
+
+/* Expanded Visualization Showcase Container */
+.visualization-container {
+  width: 100%;
+  height: 640px;
+  background-color: #FAF9F5;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lg), var(--shadow-sharp);
+}
+
+.vis-header {
   background: var(--text-black);
   color: var(--bg-white);
+  padding: 0.75rem 1.25rem;
+  font-size: 11px;
+  letter-spacing: 1px;
+  z-index: 60;
+  position: relative;
+}
+
+.vis-body {
+  background-color: var(--bg-ivory);
+  height: calc(100% - 42px);
+  position: relative;
   padding: 2rem;
-  box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
-  transform: perspective(800px) rotateY(-15deg);
+  overflow: hidden;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, var(--border-light) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-light) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* STATIONARY CENTER PROJECT CARD */
+.stationary-center {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  background: var(--text-black);
+  color: var(--bg-white);
+  padding: 1.1rem 1.35rem;
+  width: 200px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.stationary-center:hover {
+  transform: translate(-50%, -52%) scale(1.03);
 }
 
 .mock-card-title {
-  font-size: 10px;
+  font-size: 9px;
   font-family: var(--font-mono);
   color: var(--text-gray);
-  letter-spacing: 2px;
-  margin-bottom: 0.5rem;
+  letter-spacing: 1.5px;
+}
+
+.badge-tag {
+  font-size: 8px;
+  font-family: var(--font-mono);
+  background: var(--accent-orange);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 700;
 }
 
 .mock-card-name {
   font-size: 24px;
   font-family: var(--font-serif);
+  color: var(--accent-orange);
+  margin: 0.35rem 0 0.2rem 0;
+}
+
+.project-desc {
+  font-size: 9px;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.mini-chip {
+  background: rgba(255, 255, 255, 0.12);
+  color: #E5E7EB;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* SVG Orbit Tracks */
+.orbital-svg-tracks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.orbit-track {
+  fill: none;
+  stroke: var(--border-medium);
+  stroke-dasharray: 4, 6;
+  stroke-width: 1.5;
+  opacity: 0.6;
+}
+
+/* REVOLVING / ORBITING CANDIDATE NODES */
+.orbiting-node {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  z-index: 25;
+  background: white;
+  border: 1px solid var(--border-medium);
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  white-space: nowrap;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.orbiting-node:hover {
+  animation-play-state: paused !important;
+  z-index: 45;
+  border-color: var(--accent-orange);
+  box-shadow: 0 8px 24px rgba(230, 83, 45, 0.25);
+}
+
+.orbiting-node.selected {
+  border: 2px solid var(--accent-orange);
+  box-shadow: 0 8px 24px var(--accent-orange-glow);
+  z-index: 40;
+}
+
+/* Keyframes for Orbit 1 (Radius 115px, 18s) */
+.orbit-node-1 {
+  animation: orbit1 18s linear infinite;
+}
+
+@keyframes orbit1 {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-115px) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg) translateY(-115px) rotate(-360deg);
+  }
+}
+
+/* Keyframes for Orbit 2 (Radius 165px, 25s) */
+.orbit-node-2 {
+  animation: orbit2 25s linear infinite;
+}
+
+@keyframes orbit2 {
+  from {
+    transform: translate(-50%, -50%) rotate(130deg) translateY(-165px) rotate(-130deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(490deg) translateY(-165px) rotate(-490deg);
+  }
+}
+
+/* Keyframes for Orbit 3 (Radius 215px, 32s) */
+.orbit-node-3 {
+  animation: orbit3 32s linear infinite;
+}
+
+@keyframes orbit3 {
+  from {
+    transform: translate(-50%, -50%) rotate(250deg) translateY(-215px) rotate(-250deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(610deg) translateY(-215px) rotate(-610deg);
+  }
+}
+
+.avatar-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.node-name {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-black);
+}
+
+.node-role {
+  font-size: 8.5px;
+  color: var(--text-gray);
+}
+
+.node-score {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-orange);
+  background: var(--accent-orange-light);
+  padding: 2px 6px;
+  border-radius: 99px;
+  margin-left: 0.4rem;
+}
+
+/* Floating Evidence Card at Bottom */
+.node-detail-floating {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-medium);
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 0;
+  }
+
+  .hero-left, .hero-right {
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .hero-right {
+    margin-top: 3rem;
+  }
+
+  .hero-headline {
+    font-size: 46px;
+  }
 }

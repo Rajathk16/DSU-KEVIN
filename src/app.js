@@ -31,7 +31,7 @@ app.use(helmet());
 // CORS should be before rate limiter so blocked requests still get CORS headers
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin: [env.clientUrl, "http://localhost:5173", "http://localhost:5174"],
     credentials: true
   })
 );

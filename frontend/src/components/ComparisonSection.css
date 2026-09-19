@@ -1,16 +1,45 @@
 .comparison-section {
-  padding: 100px 0;
+  padding: 110px 0;
   background-color: var(--bg-ivory);
+  border-top: 1px solid var(--border-light);
+}
+
+.comparison-header-main {
+  margin-bottom: 4rem;
+}
+
+.section-tag {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.section-headline {
+  font-size: 44px;
+  line-height: 1.1;
+  color: var(--text-black);
 }
 
 .comparison-grid {
   display: flex;
   align-items: flex-start;
+  gap: 2rem;
 }
 
 .compare-col {
   flex: 1;
-  padding: 0 4rem;
+  padding: 2rem;
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compare-kevin {
+  border: 1px solid var(--accent-orange);
+  box-shadow: 0 10px 30px rgba(230, 83, 45, 0.08);
 }
 
 .divider-vertical {
@@ -20,78 +49,125 @@
 }
 
 .compare-header {
-  padding-bottom: 1rem;
+  padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--text-black);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.col-title {
+  font-size: 26px;
+  margin-left: 12px;
 }
 
 .badge {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 12px;
 }
 
 .badge-outline {
-  border: 1px solid var(--text-black);
-  color: var(--text-black);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-ivory);
 }
 
 .badge-filled {
   background-color: var(--accent-orange);
   color: var(--bg-white);
+  box-shadow: 0 4px 10px var(--accent-orange-glow);
 }
 
 .label-tiny {
   font-size: 10px;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  font-weight: 700;
 }
 
+.compare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* Individual Row container (no full-row highlight) */
 .compare-row {
-  height: 42px;
-  border-bottom: 1px solid var(--border-light);
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+/* Individual Element Target Box */
+.item-element-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.compare-row:hover {
-  background-color: rgba(0,0,0,0.02);
+/* Individual Element Hover Highlight for Usual Way */
+.usual-element:hover, .element-highlight-usual {
+  background-color: #FAF8F5;
+  border-color: var(--border-medium);
+  transform: translateX(3px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-.compare-row:hover .chev {
+/* Individual Element Hover Highlight for KEVIN Way */
+.kevin-element:hover, .element-highlight-kevin {
+  background-color: var(--accent-orange-light);
+  border-color: rgba(230, 83, 45, 0.35);
   transform: translateX(4px);
+  box-shadow: 0 4px 12px var(--accent-orange-glow);
 }
 
 .chev {
   transition: transform 0.2s ease;
 }
 
+.chev-active {
+  transform: translateX(4px);
+}
+
 .row-num {
-  font-size: 10px;
-  width: 32px;
+  font-size: 11px;
+  width: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .row-text {
   font-size: 14px;
+  font-weight: 500;
+  display: block;
 }
 
-.fw-600 {
-  font-weight: 600;
+.row-subdetail {
+  font-size: 10px;
+  display: block;
+  margin-top: 2px;
 }
 
-@media (max-width: 768px) {
+.fw-bold {
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
   .comparison-grid {
     flex-direction: column;
   }
   .compare-col {
-    padding: 0;
+    padding: 1.5rem;
     width: 100%;
-    margin-bottom: 3rem;
   }
   .divider-vertical {
     display: none;
+  }
+  .section-headline {
+    font-size: 32px;
   }
 }

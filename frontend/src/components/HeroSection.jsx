@@ -1,18 +1,51 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import './HeroSection.css';
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, CheckCircle2, Cpu, GitBranch, Sparkles } from 'lucide-react';
+import { LiquidMetalButton } from '../shaders/liquid-metal-button/LiquidMetalButton';
 
 const HeroSection = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const [activeNode, setActiveNode] = useState(1);
+
+  const nodes = [
+    {
+      id: 0,
+      name: "Arjun Mehta",
+      role: "Python / PyTorch",
+      match: "91%",
+      initials: "AM",
+      evidence: "14 repos · 32 commits",
+      orbitClass: "orbit-node-1"
+    },
+    {
+      id: 1,
+      name: "Ananya Sharma",
+      role: "Computer Vision · OpenCV",
+      match: "94%",
+      initials: "AS",
+      evidence: "Verified GitHub · Top Match",
+      orbitClass: "orbit-node-2"
+    },
+    {
+      id: 2,
+      name: "Rohan V.",
+      role: "Embedded Systems / Rust",
+      match: "88%",
+      initials: "RV",
+      evidence: "Firmware · Hardware AI",
+      orbitClass: "orbit-node-3"
+    }
+  ];
+
   return (
     <section className="hero">
-      <div className="container flex">
-        <div className="hero-left">
+      <div className="hero-container flex items-center justify-between">
+        <div className="hero-left reveal-on-scroll is-visible">
           <div className="hero-eyebrow mono text-orange uppercase flex items-center">
-            <span className="dot"></span> CAMPUS-ONLY · SKILL EXCHANGE / 001
+            <span className="dot pulse"></span> CAMPUS-ONLY · SKILL EXCHANGE / 001
           </div>
           
           <h1 className="hero-headline">
@@ -25,55 +58,115 @@ const HeroSection = () => {
           </h1>
           
           <p className="hero-subtext">
-            Build teams around what your project needs — not <br/>just who you already know.
+            Build high-performance teams around what your project strictly needs — backed by verified GitHub evidence, not guesswork.
           </p>
           
-          <div className="hero-actions flex items-center">
+          <div className="hero-actions flex items-center gap-4">
             <button className="cta-button" onClick={() => navigate(user ? '/teams?create=true' : '/login')}>
               Build a team <ArrowUpRight size={16} />
             </button>
             <Link to="/talent" className="secondary-link flex items-center">
               Explore talent <ArrowDownRight size={16} />
             </Link>
+
+            <div className="liquid-metal-action-wrapper">
+              <LiquidMetalButton
+                variant="play"
+                rendering="colored"
+                diameter={54}
+                strokeWidth={3.0}
+                text="Play"
+                onClick={() => navigate('/talent')}
+              />
+            </div>
+          </div>
+
+          <div className="hero-stats-row flex items-center">
+            <div className="stat-pill">
+              <span className="mono text-orange bold">98%</span>
+              <span className="text-gray">Verification Accuracy</span>
+            </div>
+            <div className="stat-divider"></div>
+            <div className="stat-pill">
+              <span className="mono text-black bold">0s</span>
+              <span className="text-gray">Manual Search Time</span>
+            </div>
           </div>
         </div>
         
-        <div className="hero-right">
-          {/* We'll implement the visualization in a separate component or here later */}
-          <div className="visualization-placeholder" style={{ borderRadius: '4px', overflow: 'hidden' }}>
-            <div className="vis-header flex justify-between mono" style={{ background: 'var(--text-black)', color: 'var(--bg-white)', padding: '0.5rem 1rem' }}>
-              <span className="text-orange"><span className="dot" style={{ background: 'var(--accent-orange)' }}></span> MATCH FOUND · 94%</span>
-              <span className="text-gray">07 / 08</span>
+        <div className="hero-right reveal-on-scroll is-visible stagger-2">
+          <div className="visualization-container">
+            <div className="vis-header flex justify-between items-center mono">
+              <span className="text-orange flex items-center gap-2">
+                <span className="dot pulse"></span> MATCH FOUND · {nodes[activeNode].match} CONFIDENCE
+              </span>
+              <span className="text-gray flex items-center gap-1">
+                <GitBranch size={12} /> SYNTHESIS ACTIVE
+              </span>
             </div>
-            <div className="vis-body" style={{ background: 'var(--bg-ivory)', height: '100%', position: 'relative', padding: '2rem' }}>
-               
-               {/* Center Project Card */}
-               <div className="mock-card" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotateY(-10deg)', zIndex: 10 }}>
-                  <div className="mock-card-title">PROJECT</div>
-                  <div className="mock-card-name" style={{ color: 'var(--accent-orange)' }}>ORION-X</div>
-                  <div className="mono text-gray" style={{ fontSize: '8px', marginTop: '1rem' }}>AUTONOMOUS ROVER</div>
+            
+            <div className="vis-body">
+               {/* Background Grid */}
+               <div className="grid-overlay"></div>
+
+               {/* SVG Orbital Path Rings Centered at 50%, 44% */}
+               <svg className="orbital-svg-tracks">
+                 <circle cx="50%" cy="44%" r="115" className="orbit-track track-1" />
+                 <circle cx="50%" cy="44%" r="165" className="orbit-track track-2" />
+                 <circle cx="50%" cy="44%" r="215" className="orbit-track track-3" />
+               </svg>
+
+               {/* STATIONARY CENTER PROJECT CARD (ORION-X) */}
+               <div className="mock-card main-project-card stationary-center">
+                  <div className="flex items-center justify-between">
+                    <div className="mock-card-title flex items-center gap-1">
+                      <Cpu size={12} className="text-orange" /> TARGET PROJECT
+                    </div>
+                    <span className="badge-tag">RECRUITING</span>
+                  </div>
+                  <div className="mock-card-name">ORION-X</div>
+                  <div className="mono text-gray project-desc">AUTONOMOUS ROVER AI</div>
+                  <div className="required-skills-preview flex gap-1">
+                    <span className="mini-chip">Computer Vision</span>
+                    <span className="mini-chip">PyTorch</span>
+                  </div>
                </div>
 
-               {/* Simulated nodes (just visual elements) */}
-               <div style={{ position: 'absolute', top: '20%', left: '20%', border: '1px solid var(--border-light)', padding: '0.5rem', background: 'white' }}>
-                 <div className="mono" style={{ fontSize: '10px' }}>Arjun (Python)</div>
-               </div>
-               
-               <div style={{ position: 'absolute', bottom: '20%', right: '15%', border: '1px solid var(--accent-orange)', padding: '0.5rem', background: 'white', zIndex: 20, boxShadow: '4px 4px 0 rgba(0,0,0,0.05)' }}>
-                 <div className="flex items-center" style={{ gap: '0.5rem' }}>
-                   <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--accent-orange)', color: 'white', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>AS</div>
-                   <div>
-                     <div className="serif text-black" style={{ fontSize: '14px', fontWeight: 'bold' }}>Ananya Sharma</div>
-                     <div className="mono text-gray" style={{ fontSize: '8px' }}>Computer Vision · 94%</div>
+               {/* REVOLVING / ORBITING CANDIDATE NODES */}
+               {nodes.map((node) => {
+                 const isSelected = activeNode === node.id;
+                 return (
+                   <div 
+                     key={node.id}
+                     className={`candidate-node orbiting-node ${node.orbitClass} ${isSelected ? 'selected' : ''}`}
+                     onClick={() => setActiveNode(node.id)}
+                   >
+                     <div className="flex items-center gap-2">
+                       <div className="avatar-circle">
+                         {node.initials}
+                       </div>
+                       <div>
+                         <div className="node-name flex items-center gap-1">
+                           {node.name}
+                           {isSelected && <CheckCircle2 size={12} className="text-orange" />}
+                         </div>
+                         <div className="mono node-role">{node.role}</div>
+                       </div>
+                       <span className="node-score mono">{node.match}</span>
+                     </div>
                    </div>
+                 );
+               })}
+
+               {/* Active Evidence Bar at Bottom with clean margin */}
+               <div className="node-detail-floating glass-panel">
+                 <div className="flex items-center justify-between">
+                   <span className="mono text-orange flex items-center gap-1 text-xs">
+                     <Sparkles size={12} /> VERIFIED EVIDENCE
+                   </span>
+                   <span className="mono text-gray text-xs">{nodes[activeNode].evidence}</span>
                  </div>
                </div>
-
-               {/* SVG Connecting lines (placeholder) */}
-               <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-                 <path d="M 120,100 Q 250,150 250,250" stroke="var(--border-light)" fill="transparent" />
-                 <path d="M 250,250 Q 300,350 400,300" stroke="var(--accent-orange)" strokeWidth="2" fill="transparent" />
-               </svg>
 
             </div>
           </div>

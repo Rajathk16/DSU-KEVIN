@@ -1,15 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
   --bg-ivory: #F7F6F1;
   --bg-white: #FFFFFF;
   --text-black: #17181b;
-  --text-gray: #8B8983;
+  --text-gray: #71706B;
   --accent-orange: #E6532D;
+  --accent-orange-hover: #D0421C;
+  --accent-orange-light: rgba(230, 83, 45, 0.08);
+  --accent-orange-glow: rgba(230, 83, 45, 0.25);
   --border-light: #E4E1DA;
+  --border-medium: #D3CFCE;
   --font-serif: 'Cormorant Garamond', serif;
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Space Mono', monospace;
+  
+  --shadow-sm: 0 2px 8px rgba(23, 24, 27, 0.04);
+  --shadow-md: 0 8px 24px rgba(23, 24, 27, 0.06);
+  --shadow-lg: 0 16px 36px rgba(23, 24, 27, 0.1);
+  --shadow-sharp: 8px 8px 0px rgba(23, 24, 27, 0.08);
+  --shadow-sharp-orange: 8px 8px 0px rgba(230, 83, 45, 0.2);
 }
 
 * {
@@ -45,13 +59,32 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 ul {
   list-style: none;
 }
 
-/* Utilities */
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-orange);
+}
+
+/* Modern Utilities */
 .container {
   max-width: 1320px;
   margin: 0 auto;
@@ -100,4 +133,176 @@ ul {
 
 .justify-center {
   justify-content: center;
+}
+
+/* Animations & Micro-Interactions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(230, 83, 45, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(230, 83, 45, 0);
+  }
+}
+
+@keyframes floatNode {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scroll Reveal Classes */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+
+/* Interactive Cards & Buttons */
+.interactive-card, .dashboard-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease !important;
+}
+
+.interactive-card:hover, .dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(23, 24, 27, 0.08), 0 0 0 1px var(--accent-orange-light) !important;
+  border-color: var(--accent-orange) !important;
+}
+
+.cta-button {
+  background-color: var(--accent-orange);
+  color: white;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 2px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-button:hover {
+  background-color: var(--accent-orange-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--accent-orange-glow);
+}
+
+.cta-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.skill-chip {
+  background: rgba(230, 83, 45, 0.08);
+  color: var(--accent-orange);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.skill-chip:hover {
+  background: var(--accent-orange);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+}
+
+/* Modal animation */
+.modal-backdrop {
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modal-content {
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

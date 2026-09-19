@@ -561,7 +561,8 @@ const getMyTeams = async (req, res, next) => {
     const pendingInvitations = [];
 
     teams.forEach(team => {
-      if (team.owner._id.toString() === req.user._id.toString()) {
+      // Check if team.owner is populated and not null before accessing _id
+      if (team.owner && team.owner._id.toString() === req.user._id.toString()) {
         activeTeams.push(team);
       } else {
         const memberRecord = team.members.find(m => m.user && m.user._id.toString() === req.user._id.toString());

@@ -29,9 +29,31 @@ app.disable("x-powered-by");
 app.use(helmet());
 
 // CORS should be before rate limiter so blocked requests still get CORS headers
+// Allowed origins: localhost for dev + any CLIENT_URL(s) from env (comma-separated)
+const allowedOrigins = new Set([
+  "http://localhost:5173",
+  "http://localhost:5174",
+  ...(env.clientUrl
+    ? env.clientUrl.split(",").map((u) => u.trim())
+    : [])
+]);
+
 app.use(
   cors({
-    origin: [env.clientUrl, "http://localhost:5173", "http://localhost:5174"],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Render health checks)
+      if (!origin) return callback(null, true);
+
+      // Allow any *.vercel.app subdomain (covers Vercel preview deployments too)
+      if (
+        allowedOrigins.has(origin) ||
+        /^https:\/\/[\w-]+(\.vercel\.app)$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+
+      callback(new Error(`CORS: Origin ${origin} not allowed`));
+    },
     credentials: true
   })
 );

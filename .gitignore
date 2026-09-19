@@ -1,2 +1,19 @@
-.env 
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
 node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Render / deploy
+render.yaml.bak

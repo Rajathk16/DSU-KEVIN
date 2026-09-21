@@ -314,7 +314,7 @@ const Dashboard = () => {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
                           <strong style={{ fontSize: '18px', display: 'block', marginBottom: '0.25rem' }}>{team.name}</strong>
-                          <span className="text-gray" style={{ fontSize: '12px' }}>Role: {team.owner._id === user._id ? 'Owner' : 'Member'}</span>
+                          <span className="text-gray" style={{ fontSize: '12px' }}>Role: {team.owner && team.owner._id === user._id ? 'Owner' : 'Member'}</span>
                         </div>
                         <a href={`/teams/${team._id}`} style={{ padding: '0.4rem 1rem', background: '#F3F4F6', color: '#374151', textDecoration: 'none', borderRadius: '4px', fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase' }}>
                           View

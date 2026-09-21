@@ -32,6 +32,14 @@ export const AuthProvider = ({ children }) => {
             setUser(response.data.data.user);
           } catch (err) {
             console.error("Failed to fetch user profile", err);
+            if (err.response && err.response.status === 404) {
+              try {
+                // Self-heal orphaned Firebase user
+                await firebaseUser.delete();
+              } catch (delErr) {
+                console.error("Failed to delete orphaned user", delErr);
+              }
+            }
             setUser(null);
           }
         // } else {
@@ -59,7 +67,13 @@ export const AuthProvider = ({ children }) => {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token);
       
-      const response = await api.get('/auth/me');
+      const response = await api.get('/auth/me').catch(async (err) => {
+        if (err.response && err.response.status === 404) {
+          await userCredential.user.delete();
+          throw new Error("User account incomplete. Please register again.");
+        }
+        throw err;
+      });
       setUser(response.data.data.user);
       return response.data.data.user;
     } catch (error) {
@@ -81,7 +95,14 @@ export const AuthProvider = ({ children }) => {
       // 3. Sync user data to backend immediately
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token); // Temporarily store so api call works
-      await api.post('/auth/sync', userData);
+      
+      try {
+        await api.post('/auth/sync', userData);
+      } catch (syncError) {
+        // Rollback Firebase user if backend sync fails
+        await userCredential.user.delete();
+        throw syncError;
+      }
       
       // Clear token since they can't login until verified
       localStorage.removeItem('token'); 

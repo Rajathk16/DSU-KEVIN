@@ -4,9 +4,10 @@ import {
   signInWithEmailAndPassword, 
   sendEmailVerification, 
   signOut as firebaseSignOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  signInWithPopup
 } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, googleProvider } from '../firebase';
 import api from '../services/api';
 
 export const AuthContext = createContext();
@@ -84,6 +85,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithProvider = async (providerName) => {
+    try {
+      const provider = googleProvider;
+      const userCredential = await signInWithPopup(auth, provider);
+      const token = await userCredential.user.getIdToken();
+      localStorage.setItem('token', token);
+
+      let response;
+      try {
+        response = await api.get('/auth/me');
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          response = await api.post('/auth/sync', { 
+            name: userCredential.user.displayName || userCredential.user.email.split('@')[0] 
+          });
+        } else {
+          throw err;
+        }
+      }
+
+      setUser(response.data.data.user);
+      return response.data.data.user;
+    } catch (error) {
+      console.error(`${providerName} login error`, error);
+      throw new Error(error.message || `${providerName} login failed`);
+    }
+  };
+
   const registerAndSync = async (userData) => {
     try {
       // 1. Create user in Firebase
@@ -139,7 +168,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, registerAndSync, logout, refreshUser, loading }}>
+    <AuthContext.Provider value={{ user, login, loginWithProvider, registerAndSync, logout, refreshUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

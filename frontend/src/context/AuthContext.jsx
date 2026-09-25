@@ -21,8 +21,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         // Only load user profile if their email is verified
-        // Temporarily disabled for hackathon testing
-        // if (firebaseUser.emailVerified) {
+        if (firebaseUser.emailVerified) {
           try {
             // Get fresh token
             const token = await firebaseUser.getIdToken();
@@ -43,9 +42,9 @@ export const AuthProvider = ({ children }) => {
             }
             setUser(null);
           }
-        // } else {
-        //   setUser(null); // Wait for verification
-        // }
+        } else {
+          setUser(null); // Wait for verification
+        }
       } else {
         localStorage.removeItem('token');
         setUser(null);
@@ -60,10 +59,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      // Temporarily disabled for hackathon testing
-      // if (!userCredential.user.emailVerified) {
-      //   throw new Error('Please verify your email before logging in.');
-      // }
+      if (!userCredential.user.emailVerified) {
+        await firebaseSignOut(auth);
+        throw new Error('Please verify your email before logging in.');
+      }
       
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token);

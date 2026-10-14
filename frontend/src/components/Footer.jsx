@@ -24,13 +24,13 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="footer-bottom flex justify-between items-center">
+        <div className="footer-bottom flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
           <div className="mono uppercase text-gray" style={{ fontSize: '11px', letterSpacing: '1px' }}>
-            CAMPUS SKILL EXCHANGE & EXPLAINABLE TEAM SYNTHESIS
+            CAMPUS SKILL EXCHANGE & EXPLAINABLE TEAM SYNTHESIS · <a href="mailto:support@dsu.edu.in" style={{ color: 'var(--accent-orange)' }}>support@dsu.edu.in</a>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="mono uppercase text-gray" style={{ fontSize: '10px' }}>© 2026 KEVIN</span>
+            <span className="mono uppercase text-gray" style={{ fontSize: '10px' }}>© {new Date().getFullYear()} KEVIN</span>
             <span className="mono uppercase text-gray" style={{ fontSize: '10px' }}>DSU CAMPUS EDITION</span>
           </div>
         </div>

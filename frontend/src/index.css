@@ -308,10 +308,29 @@ ul {
   }
 }
 
-/* Responsive Overrides */
+/* Responsive Overrides & Overflow Safeguards */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 @media (max-width: 1024px) {
   .container {
     padding: 0 1.5rem !important;
+  }
+  
+  [style*="grid-template-columns: 1fr 2fr"] {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -320,19 +339,16 @@ ul {
     padding: 0 1rem !important;
   }
   
-  /* Target React's rendered inline styles */
+  /* Target multi-column inline grids */
   [style*="grid-template-columns: 1fr 1fr"],
   [style*="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr))"],
-  [style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+  [style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"],
+  [style*="grid-template-columns: 1fr 2fr"],
+  [style*="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))"] {
     grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
   }
 
-  [style*="flex-direction: row"],
-  [style*="display: flex"] {
-    /* Notice: doing this globally for all flex containers might break some layouts like navbar */
-  }
-  
-  /* Safe class-based wrappers where flex direction should flip to column */
   .hero-container,
   .vis-header,
   .hero-stats-row {
@@ -340,7 +356,6 @@ ul {
     align-items: flex-start !important;
   }
 
-  /* Specific fixes for dashboard/hackathon cards inline flex styles */
   .dashboard-card > div[style*="display: flex"] {
     flex-direction: column !important;
     align-items: flex-start !important;
@@ -352,12 +367,10 @@ ul {
     align-items: flex-start !important;
   }
   
-  /* Keep action row with avatar and stats horizontal */
   .node-name, .vis-header {
     flex-direction: row !important;
   }
   
-  /* Modals/forms */
   form,
   .modal-content {
     width: 100% !important;
@@ -369,8 +382,12 @@ ul {
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem !important;
+  }
+
   h2.serif {
-    font-size: 28px !important;
+    font-size: 26px !important;
   }
 
   .cta-button {
@@ -378,13 +395,38 @@ ul {
     justify-content: center;
   }
   
-  /* Generic mobile adjustments */
   [style*="gap: 4rem"] {
-    gap: 2rem !important;
+    gap: 1.5rem !important;
   }
   
   [style*="padding: 4rem 2rem"],
   [style*="padding: 4rem"] {
-    padding: 2rem 1rem !important;
+    padding: 2rem 0.75rem !important;
+  }
+  
+  .auth-card {
+    padding: 2rem 1.25rem !important;
+  }
+  
+  .visualization-container {
+    height: 480px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .vis-body {
+    transform: scale(0.78);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vis-body {
+    transform: scale(0.68);
+    transform-origin: top center;
+  }
+  
+  .visualization-container {
+    height: 420px;
   }
 }

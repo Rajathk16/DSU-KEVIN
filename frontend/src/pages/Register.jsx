@@ -18,6 +18,10 @@ const Register = () => {
   const { registerAndSync, loginWithProvider } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    document.title = "Register | Join KEVIN Campus Portal";
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -55,7 +59,27 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-container flex items-center justify-center">
+    <div className="auth-container flex items-center justify-center" style={{ position: 'relative' }}>
+      <Link 
+        to="/" 
+        style={{ 
+          position: 'absolute', 
+          top: '2rem', 
+          left: '2rem', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.5rem', 
+          color: '#6B7280', 
+          textDecoration: 'none',
+          fontWeight: '500',
+          fontSize: '14px',
+          transition: 'color 0.2s ease'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.color = '#F97316'}
+        onMouseLeave={(e) => e.currentTarget.style.color = '#6B7280'}
+      >
+        &larr; Back to Home
+      </Link>
       <div className="auth-card">
         <div className="auth-brand-badge">
           <div className="logo-box">K</div>
@@ -70,13 +94,13 @@ const Register = () => {
         {message && <div style={{ background: '#ECFDF5', color: '#047857', padding: '0.85rem', fontSize: '13px', border: '1px solid #A7F3D0', borderRadius: '4px', marginBottom: '1.25rem', textAlign: 'center', fontWeight: '500' }}>{message}</div>}
         
         <form onSubmit={handleSubmit} className="auth-form">
-          <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required className="auth-input" />
-          <input type="email" name="email" placeholder="College Email (.edu.in or .ac.in)" value={formData.email} onChange={handleChange} required className="auth-input" />
-          <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required className="auth-input" />
+          <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required maxLength={100} autoComplete="name" className="auth-input" />
+          <input type="email" name="email" placeholder="College Email (.edu.in or .ac.in)" value={formData.email} onChange={handleChange} required maxLength={254} autoComplete="email" className="auth-input" />
+          <input type="password" name="password" placeholder="Password (minimum 8 characters)" value={formData.password} onChange={handleChange} required minLength={8} maxLength={128} autoComplete="new-password" className="auth-input" />
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <input type="text" name="college" placeholder="College Name" value={formData.college} onChange={handleChange} required className="auth-input" />
-            <input type="text" name="studentId" placeholder="Student ID" value={formData.studentId} onChange={handleChange} required className="auth-input" />
+            <input type="text" name="college" placeholder="College Name" value={formData.college} onChange={handleChange} required maxLength={200} className="auth-input" />
+            <input type="text" name="studentId" placeholder="Student ID" value={formData.studentId} onChange={handleChange} required maxLength={100} className="auth-input" />
           </div>
 
           <button type="submit" className="cta-button" style={{ width: '100%', justifyContent: 'center', height: '44px', marginTop: '0.5rem' }} disabled={isSubmitting}>

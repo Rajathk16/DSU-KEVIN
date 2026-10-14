@@ -12,6 +12,7 @@ import Teams from './pages/Teams';
 import TeamDetails from './pages/TeamDetails';
 import Hackathons from './pages/Hackathons';
 import About from './pages/About';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/about" element={<About />} />
           <Route path="/auth/github/callback" element={<GithubCallback />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

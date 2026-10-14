@@ -12,6 +12,10 @@ const Login = () => {
   const { login, loginWithProvider } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    document.title = "Login | KEVIN Campus Portal";
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -79,6 +83,8 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              maxLength={254}
+              autoComplete="email"
               className="auth-input"
             />
           </div>
@@ -91,6 +97,8 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              maxLength={128}
+              autoComplete="current-password"
               className="auth-input"
             />
           </div>

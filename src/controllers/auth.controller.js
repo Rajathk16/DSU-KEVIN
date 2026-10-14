@@ -29,33 +29,35 @@ const syncUser = async (req, res, next) => {
 
     const { name, college, studentId, bio, skills } = req.body;
 
+    // Server-side sanitization and length enforcement
+    const sanitizedName = typeof name === "string" ? name.trim().slice(0, 100) : email.split('@')[0];
+    const sanitizedCollege = typeof college === "string" ? college.trim().slice(0, 200) : "";
+    const sanitizedStudentId = typeof studentId === "string" ? studentId.trim().slice(0, 100) : "";
+    const sanitizedBio = typeof bio === "string" ? bio.trim().slice(0, 1000) : "";
+
     const normalizedSkills = Array.isArray(skills)
-      ? [...new Set(skills.filter(s => typeof s === "string").map(s => s.trim().toLowerCase()).filter(Boolean))]
+      ? [...new Set(skills.filter(s => typeof s === "string").map(s => s.trim().toLowerCase().slice(0, 50)).filter(Boolean))].slice(0, 30)
       : [];
 
     let user = await User.findOne({ email });
 
     if (!user) {
-      // Create new user in DB
-      // We don't need to store passwords anymore because Firebase handles it!
-      // However, our User model might require a password field. 
-      // We can generate a random string or remove the requirement from the schema later.
       user = await User.create({
-        name: name ? name.trim() : email.split('@')[0],
+        name: sanitizedName || email.split('@')[0],
         email: email,
-        password: "FIREBASE_MANAGED_PASSWORD_" + Date.now(), // Dummy password since required
-        college: college ? college.trim() : "",
-        studentId: studentId ? studentId.trim() : "",
-        bio: typeof bio === "string" ? bio.trim() : "",
+        password: "FIREBASE_MANAGED_PASSWORD_" + Date.now(),
+        college: sanitizedCollege,
+        studentId: sanitizedStudentId,
+        bio: sanitizedBio,
         skills: normalizedSkills
       });
     } else {
       // Update existing user profile if needed
-      if (name) user.name = name.trim();
-      if (college) user.college = college.trim();
-      if (studentId) user.studentId = studentId.trim();
-      if (bio) user.bio = bio.trim();
-      if (skills) user.skills = normalizedSkills;
+      if (sanitizedName) user.name = sanitizedName;
+      if (sanitizedCollege) user.college = sanitizedCollege;
+      if (sanitizedStudentId) user.studentId = sanitizedStudentId;
+      if (sanitizedBio !== undefined) user.bio = sanitizedBio;
+      if (Array.isArray(skills)) user.skills = normalizedSkills;
       await user.save();
     }
 

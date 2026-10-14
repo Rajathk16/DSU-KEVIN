@@ -7,6 +7,10 @@ import api from '../services/api';
 
 const Dashboard = () => {
   const { user, loading, refreshUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    document.title = "Dashboard | KEVIN Campus Synthesis";
+  }, []);
   const [hackathons, setHackathons] = useState([]);
   const [teams, setTeams] = useState([]);
   const [invitations, setInvitations] = useState([]);

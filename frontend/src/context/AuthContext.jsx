@@ -28,18 +28,28 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token); // Store for axios interceptor
             
             // Fetch backend profile
-            const response = await api.get('/auth/me');
-            setUser(response.data.data.user);
-          } catch (err) {
-            console.error("Failed to fetch user profile", err);
-            if (err.response && err.response.status === 404) {
-              try {
-                // Self-heal orphaned Firebase user
-                await firebaseUser.delete();
-              } catch (delErr) {
-                console.error("Failed to delete orphaned user", delErr);
+            let userProfile;
+            try {
+              const response = await api.get('/auth/me', {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              userProfile = response.data.data.user;
+            } catch (err) {
+              if (err.response && err.response.status === 404) {
+                // If user logged in (e.g. via Google OAuth) but not yet synced, sync now
+                const syncRes = await api.post('/auth/sync', {
+                  name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User'
+                }, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                userProfile = syncRes.data.data.user;
+              } else {
+                throw err;
               }
             }
+            setUser(userProfile);
+          } catch (err) {
+            console.error("Failed to fetch user profile", err);
             setUser(null);
           }
         } else {
@@ -67,7 +77,9 @@ export const AuthProvider = ({ children }) => {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token);
       
-      const response = await api.get('/auth/me').catch(async (err) => {
+      const response = await api.get('/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(async (err) => {
         if (err.response && err.response.status === 404) {
           await userCredential.user.delete();
           throw new Error("User account incomplete. Please register again.");
@@ -93,11 +105,15 @@ export const AuthProvider = ({ children }) => {
 
       let response;
       try {
-        response = await api.get('/auth/me');
+        response = await api.get('/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
       } catch (err) {
         if (err.response && err.response.status === 404) {
           response = await api.post('/auth/sync', { 
             name: userCredential.user.displayName || userCredential.user.email.split('@')[0] 
+          }, {
+            headers: { Authorization: `Bearer ${token}` }
           });
         } else {
           throw err;
@@ -125,7 +141,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token); // Temporarily store so api call works
       
       try {
-        await api.post('/auth/sync', userData);
+        await api.post('/auth/sync', userData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
       } catch (syncError) {
         // Rollback Firebase user if backend sync fails
         await userCredential.user.delete();

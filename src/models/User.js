@@ -228,21 +228,21 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: [true, "Password is required"],
+      default: () => "FIREBASE_MANAGED_PASSWORD_" + Date.now(),
       minlength: [8, "Password must contain at least 8 characters"],
       select: false
     },
 
     college: {
       type: String,
-      required: [true, "College is required"],
+      default: "",
       trim: true,
       maxlength: [200, "College name cannot exceed 200 characters"]
     },
 
     studentId: {
       type: String,
-      required: [true, "Student ID is required"],
+      default: "",
       trim: true,
       maxlength: [100, "Student ID cannot exceed 100 characters"]
     },

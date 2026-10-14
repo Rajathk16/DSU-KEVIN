@@ -8,6 +8,10 @@ import { Search, Sparkles, GitBranch, ExternalLink, UserCheck } from 'lucide-rea
 
 const TalentDirectory = () => {
   const { user, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    document.title = "Verified Campus Talent Directory | KEVIN";
+  }, []);
   const [talents, setTalents] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);

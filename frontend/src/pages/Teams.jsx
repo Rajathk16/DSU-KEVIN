@@ -8,6 +8,10 @@ import { Users, Plus, X, Sparkles, ArrowUpRight, ShieldCheck, UserPlus, Layers }
 
 const Teams = () => {
   const { user, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    document.title = "Campus Teams & Squads | KEVIN";
+  }, []);
   const [teams, setTeams] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -27,6 +27,7 @@ const app = express();
  * Basic Express configuration
  */
 app.disable("x-powered-by");
+app.set("trust proxy", 1); // Trust first reverse proxy (Render / Cloudflare / Nginx)
 
 // Security Headers
 app.use(helmet());
@@ -39,25 +40,45 @@ app.use(
   })
 );
 
-// Rate Limiting
+// General Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 300, // Limit each IP to 300 requests per 15 minutes
   standardHeaders: true, 
-  legacyHeaders: false, 
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: {
+      message: "Too many requests from this IP, please try again in a few minutes."
+    }
+  }
 });
 app.use(limiter);
 
+// Stricter Rate Limiting on Authentication endpoints (brute-force defense)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30, // 30 sync/login requests per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: {
+      message: "Too many authentication attempts. Please wait 15 minutes before trying again."
+    }
+  }
+});
+
 app.use(
   express.json({
-    limit: "1mb"
+    limit: "500kb" // Limit body size to prevent payload-based DoS
   })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "1mb"
+    limit: "500kb"
   })
 );
 
@@ -79,7 +100,7 @@ app.get("/health", (req, res) => {
 /*
  * API routes
  */
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 
 app.use("/api/users", userRoutes);
 

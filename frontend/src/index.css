@@ -403,8 +403,23 @@ ul {
 }
 
 /* ================================
-   RESPONSIVE
+   RESPONSIVE & OVERFLOW SAFEGUARDS
 ================================ */
+
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
 
 /* Tablets */
 @media (max-width: 1024px) {
@@ -414,6 +429,10 @@ ul {
 
   .dashboard-grid {
     gap: 2rem;
+  }
+  
+  [style*="grid-template-columns: 1fr 2fr"] {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -439,11 +458,14 @@ ul {
     justify-content: center;
   }
 
-  /* Target React inline grid styles */
+  /* Target multi-column inline grids */
   [style*="grid-template-columns: 1fr 1fr"],
   [style*="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr))"],
-  [style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+  [style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"],
+  [style*="grid-template-columns: 1fr 2fr"],
+  [style*="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))"] {
     grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
   }
 
   /* Safe class-based responsive containers */
@@ -486,8 +508,12 @@ ul {
 
 /* Small Mobile */
 @media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem !important;
+  }
+
   h2.serif {
-    font-size: 28px !important;
+    font-size: 26px !important;
   }
 
   .cta-button {
@@ -496,12 +522,38 @@ ul {
   }
 
   [style*="gap: 4rem"] {
-    gap: 2rem !important;
+    gap: 1.5rem !important;
   }
 
   [style*="padding: 4rem 2rem"],
   [style*="padding: 4rem"] {
-    padding: 2rem 1rem !important;
+    padding: 2rem 0.75rem !important;
+  }
+  
+  .auth-card {
+    padding: 2rem 1.25rem !important;
+  }
+  
+  .visualization-container {
+    height: 480px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .vis-body {
+    transform: scale(0.78);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vis-body {
+    transform: scale(0.68);
+    transform-origin: top center;
+  }
+  
+  .visualization-container {
+    height: 420px;
   }
 
   .dashboard-stats {

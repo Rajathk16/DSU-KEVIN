@@ -3,6 +3,9 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const About = () => {
+  React.useEffect(() => {
+    document.title = "About KEVIN | AI Campus Team Synthesis";
+  }, []);
   return (
     <div className="home" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
@@ -72,7 +75,12 @@ const About = () => {
           </div>
           
           <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
-            <p className="mono text-gray" style={{ fontSize: '12px' }}>Built with ❤️ for DSU DEVHACK 3.0 at Sahyadri College of Engineering & Management.</p>
+            <p className="mono text-gray" style={{ fontSize: '12px', marginBottom: '0.5rem' }}>
+              Built with ❤️ for DSU DEVHACK 3.0 at Sahyadri College of Engineering & Management.
+            </p>
+            <p className="mono text-gray" style={{ fontSize: '12px' }}>
+              Questions or campus partnerships? Reach out at <a href="mailto:contact@dsu-kevin.edu.in" style={{ color: 'var(--accent-orange)', fontWeight: 'bold' }}>contact@dsu-kevin.edu.in</a>
+            </p>
           </div>
         </div>
       </div>

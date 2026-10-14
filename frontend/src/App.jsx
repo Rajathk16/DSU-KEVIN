@@ -12,6 +12,7 @@ import Teams from './pages/Teams';
 import TeamDetails from './pages/TeamDetails';
 import Hackathons from './pages/Hackathons';
 import About from './pages/About';
+import NotFound from './pages/NotFound';
 import Leaderboard from './pages/Leaderboard';
 import Showcase from './pages/Showcase';
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/showcase" element={<Showcase />} />
           <Route path="/auth/github/callback" element={<GithubCallback />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

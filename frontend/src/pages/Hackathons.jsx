@@ -8,6 +8,10 @@ import { Calendar, Clock, Trophy, Sparkles, ArrowRight, CheckCircle2 } from 'luc
 
 const Hackathons = () => {
   const { user, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    document.title = "Campus Hackathons & Competitions | KEVIN";
+  }, []);
   const [hackathons, setHackathons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

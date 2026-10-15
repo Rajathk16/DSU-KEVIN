@@ -7,9 +7,15 @@ import api from '../services/api';
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const DEFAULT_NODES = [
+    { id: 0, name: "Arjun Mehta", role: "Python / PyTorch", match: "91%", initials: "AM", evidence: "14 repos · 32 commits", orbitClass: "orbit-node-1" },
+    { id: 1, name: "Ananya Sharma", role: "Computer Vision · OpenCV", match: "94%", initials: "AS", evidence: "Verified GitHub · Top Match", orbitClass: "orbit-node-2" },
+    { id: 2, name: "Rohan V.", role: "Embedded Systems / Rust", match: "88%", initials: "RV", evidence: "Firmware · Hardware AI", orbitClass: "orbit-node-3" }
+  ];
+
   const { user } = useContext(AuthContext);
   const [activeNode, setActiveNode] = useState(0);
-  const [nodes, setNodes] = useState([]);
+  const [nodes, setNodes] = useState(DEFAULT_NODES);
 
   useEffect(() => {
     const fetchUsers = async () => {
